@@ -1,26 +1,33 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import css from './ContactListItem.module.css';
+import PropTypes from 'prop-types';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 export class ContactListItem extends Component {
-  //componentWillUnmount() will be called just before the element will be removed in the DOM
-  componentWillUnmount() {
-    console.log('componentWillUnmount()');
-  }
+  static propTypes = {
+    filteredContact: PropTypes.object.isRequired,
+    deleteContact: PropTypes.func.isRequired,
+  };
 
-  // handleDelete method
   handleDelete = () => {
-    const { contact, deleteContact } = this.props;
-    deleteContact(contact.id);
+    const { filteredContact, deleteContact } = this.props;
+    deleteContact(filteredContact.id);
+    Notify.success(
+      `${filteredContact.name} was successfully deleted from your contacts!`,
+      { position: 'center-top' }
+    );
   };
 
   render() {
-    const { contact } = this.props;
+    const { filteredContact } = this.props;
 
     return (
       <li className={css.contactListItem}>
-        <p>{contact.name}:</p>
-        <p>{contact.number}</p>
-        <button onClick={this.handleDelete}>Delete</button>
+        <p>{filteredContact.name}:</p>
+        <p className={css.contactAlign}>{filteredContact.number}</p>
+        <button className={css.btnDelete} onClick={this.handleDelete}>
+          Delete
+        </button>
       </li>
     );
   }
